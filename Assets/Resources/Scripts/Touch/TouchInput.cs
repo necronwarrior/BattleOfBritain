@@ -67,7 +67,7 @@ public class TouchInput : MonoBehaviour {
 #else
 					if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved) {
 #endif
-                        hitObject.SendMessage ("OnTouchStay", touchHit.point, SendMessageOptions.DontRequireReceiver);
+                        hitObject.SendMessage ("OnTouchMove", touchHit.point, SendMessageOptions.DontRequireReceiver);
 
 					}else
 

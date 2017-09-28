@@ -10,11 +10,13 @@ using UnityEngine;
     The names of the functions are pretty selfexplanatory.
 
 */
-interface ITouchReceiver {
+public interface ITouchReceiver {
 
     void OnTouchDown(Vector3 point);
 
     void OnTouchUp(Vector3 point);
+
+	void OnTouchMove(Vector3 point);
 
     void OnTouchStay(Vector3 point);
 
