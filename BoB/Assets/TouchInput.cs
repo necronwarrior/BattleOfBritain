@@ -37,7 +37,7 @@ public class TouchInput : MonoBehaviour {
 						hitObject.SendMessage ("OnTouchUp", touchHit.point, SendMessageOptions.DontRequireReceiver);
 
 					}
-					if ((Input.GetMouseButton(0)) {
+					if ((Input.GetMouseButton(0))) {
 						hitObject.SendMessage ("OnTouchStay", touchHit.point, SendMessageOptions.DontRequireReceiver);
 
 					}
