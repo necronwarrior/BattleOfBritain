@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DogFight : MonoBehaviour {
 
+    private UnityEngine.Object spherePrefab;
 
 
     public Vector3 dogfightCenter;
@@ -12,12 +13,15 @@ public class DogFight : MonoBehaviour {
 
 
     //Dancing Stuff
-    private Vector3 targetDancingPoint;
-    public float targetThreshold = 0.1f;
-    public float sphereDancingRadius = 1.0f;
     public float fightingSpeed = 1.0f;
+    public float currentTime = 0.0f;
+
+    //OtherPlane
+    Transform otherPlaneTransform;
 
     void Awake() {
+
+        spherePrefab = Resources.Load("Prefabs/TestSphere");
 
         rangeCollider = GetComponentInChildren<SphereCollider>();
 
@@ -25,9 +29,7 @@ public class DogFight : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
-        targetDancingPoint.Set(100.0f, 100.0f, 100.0f);
-
+        
 
     }
 	
@@ -42,47 +44,74 @@ public class DogFight : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        if (dogFighting) return;
+
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
             Debug.Log("Dogfighting");
 
             dogFighting = true;
 
-            dogfightCenter = other.gameObject.transform.position;
+            dogfightCenter = transform.position + ((other.gameObject.transform.position - transform.position) /2.0f);
+
+            //dogfightCenter = transform.TransformPoint(dogfightCenter);
+
+            GameObject newSphere = (GameObject)Instantiate(spherePrefab, transform);
+            newSphere.transform.position = dogfightCenter;
+
+            this.rangeCollider.radius = this.rangeCollider.radius * 2.0f;
+
+            otherPlaneTransform = other.gameObject.transform;
+
         }
 
     }
 
     void OnTriggerExit(Collider other)
     {
+
+        if (!dogFighting) return;
+
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
             Debug.Log("End of the dogfight");
 
             dogFighting = false;
+
+            this.rangeCollider.radius = this.rangeCollider.radius / 2.0f;
+
+            otherPlaneTransform = null;
+
         }
     }
 
     void Dance() {
 
-        // We get a new targe if we reached the previous one (or the first one for that matter)
-        if ((transform.position - targetDancingPoint).magnitude < targetThreshold) {
-            Debug.Log("Changing target");
-            targetDancingPoint = dogfightCenter + Random.onUnitSphere * sphereDancingRadius;
-        }
+        currentTime += Time.deltaTime;
 
-        float step = Time.deltaTime * fightingSpeed;
-
-        Vector3 deltaPosition = ((targetDancingPoint - transform.position) * step);
+        Vector3 noiseAxis = new Vector3(
+            Mathf.PerlinNoise(currentTime / 3.0f , 0.0f),
+            Mathf.PerlinNoise((currentTime+50.0f) / 3.0f, 0.0f),
+            Mathf.PerlinNoise((currentTime+100.0f) / 3.0f, 0.0f));
         
-        Vector3 nextPosition = transform.position + deltaPosition;
+        noiseAxis.Scale(new Vector3(2.0f, 2.0f, 2.0f));
+        noiseAxis -= new Vector3(1.0f, 1.0f, 1.0f);
+        noiseAxis.Normalize();
 
 
-        var targetRotation = Quaternion.LookRotation(deltaPosition);
+        Vector3 noiseAxis2 = new Vector3(
+            Mathf.PerlinNoise((currentTime + 100.0f) / 3.0f, 0.0f),
+            Mathf.PerlinNoise((currentTime + 10.0f) / 3.0f, 0.0f),
+            Mathf.PerlinNoise((currentTime + 200.0f) / 3.0f, 0.0f));
 
-        // Smoothly rotate towards the target point.
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, step);
+        noiseAxis2.Scale(new Vector3(2.0f, 2.0f, 2.0f));
+        noiseAxis2 -= new Vector3(1.0f, 1.0f, 1.0f);
+        noiseAxis2.Normalize();
 
+
+        transform.RotateAround(dogfightCenter, noiseAxis, fightingSpeed * Time.deltaTime);
+        otherPlaneTransform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
+        
 
     }
 
