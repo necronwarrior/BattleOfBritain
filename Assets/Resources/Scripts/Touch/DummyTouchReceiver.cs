@@ -24,6 +24,7 @@ public class DummyTouchReceiver : MonoBehaviour, ITouchReceiver
 
     public void OnTouchUp(Vector3 point)
     {
+		if(SelectedObject!=null)
 		SelectedObject.SendMessage ("OnTouchUp", point, SendMessageOptions.DontRequireReceiver);
 		SelectedObject = null;
     }
@@ -35,16 +36,19 @@ public class DummyTouchReceiver : MonoBehaviour, ITouchReceiver
 
     public void OnTouchMove(Vector3 point)
     {
+		if(SelectedObject!=null)
 		SelectedObject.SendMessage ("OnTouchMove", point, SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnTouchStay(Vector3 point)
     {
+		if(SelectedObject!=null)
 		SelectedObject.SendMessage ("OnTouchStay", point, SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnTouchExit(Vector3 point)
     {
+		if(SelectedObject!=null)
 		SelectedObject.SendMessage ("OnTouchExit", point, SendMessageOptions.DontRequireReceiver);
     }
 

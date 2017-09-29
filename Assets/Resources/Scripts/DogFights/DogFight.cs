@@ -30,6 +30,7 @@ public class DogFight : MonoBehaviour {
 
         rangeCollider = GetComponentInChildren<SphereCollider>();
         
+		Debug.Log (rangeCollider);
 
     }
 
@@ -58,11 +59,6 @@ public class DogFight : MonoBehaviour {
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
             StartDogfight(other);
-
-
-
-
-
         }
 
     }
