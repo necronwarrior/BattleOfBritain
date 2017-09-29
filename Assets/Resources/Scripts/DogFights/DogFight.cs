@@ -16,14 +16,20 @@ public class DogFight : MonoBehaviour {
     public float fightingSpeed = 1.0f;
     public float currentTime = 0.0f;
 
+
     //OtherPlane
-    Transform otherPlaneTransform;
+    GameObject otherPlaneGameObject;
+
+    //PlaneComponents
+    GeneralPlane enemyPlaneComponent;
+    GeneralPlane myPlaneComponent;
 
     void Awake() {
 
         spherePrefab = Resources.Load("Prefabs/TestSphere");
 
         rangeCollider = GetComponentInChildren<SphereCollider>();
+        
 
     }
 
@@ -37,6 +43,9 @@ public class DogFight : MonoBehaviour {
 	void Update () {
 
         if (dogFighting) {
+            if (otherPlaneGameObject == null) {
+                EndDogfight();
+            }
             Dance();
         }
 
@@ -48,20 +57,11 @@ public class DogFight : MonoBehaviour {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
-            Debug.Log("Dogfighting");
+            StartDogfight(other);
 
-            dogFighting = true;
 
-            dogfightCenter = transform.position + ((other.gameObject.transform.position - transform.position) /2.0f);
 
-            //dogfightCenter = transform.TransformPoint(dogfightCenter);
 
-            GameObject newSphere = (GameObject)Instantiate(spherePrefab, transform);
-            newSphere.transform.position = dogfightCenter;
-
-            this.rangeCollider.radius = this.rangeCollider.radius * 2.0f;
-
-            otherPlaneTransform = other.gameObject.transform;
 
         }
 
@@ -74,15 +74,52 @@ public class DogFight : MonoBehaviour {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
-            Debug.Log("End of the dogfight");
-
-            dogFighting = false;
-
-            this.rangeCollider.radius = this.rangeCollider.radius / 2.0f;
-
-            otherPlaneTransform = null;
-
+            EndDogfight();
         }
+    }
+
+
+    void StartDogfight(Collider other) {
+
+        Debug.Log("Dogfighting");
+
+        dogFighting = true;
+
+        dogfightCenter = transform.position + ((other.gameObject.transform.position - transform.position) / 2.0f);
+
+        //dogfightCenter = transform.TransformPoint(dogfightCenter);
+
+        GameObject newSphere = (GameObject)Instantiate(spherePrefab, transform);
+        newSphere.transform.position = dogfightCenter;
+
+        this.rangeCollider.radius = this.rangeCollider.radius * 2.0f;
+
+        otherPlaneGameObject = other.gameObject;
+
+        GeneralPlane enemyPlaneComponent = otherPlaneGameObject.GetComponent<EnemyPlane>();
+        GeneralPlane myPlaneComponent = GetComponent<AllyPlane>();
+
+
+        enemyPlaneComponent.StartDealingDamage(myPlaneComponent);
+        myPlaneComponent.StartDealingDamage(enemyPlaneComponent);
+
+
+    }
+
+    void EndDogfight() {
+
+        dogFighting = false;
+
+        this.rangeCollider.radius = this.rangeCollider.radius / 2.0f;
+
+        otherPlaneGameObject = null;
+
+        if(enemyPlaneComponent!=null)
+            enemyPlaneComponent.StopDealingDamage();
+
+        if (myPlaneComponent != null)
+            myPlaneComponent.StopDealingDamage();
+
     }
 
     void Dance() {
@@ -110,7 +147,7 @@ public class DogFight : MonoBehaviour {
 
 
         transform.RotateAround(dogfightCenter, noiseAxis, fightingSpeed * Time.deltaTime);
-        otherPlaneTransform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
+        otherPlaneGameObject.transform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
         
 
     }
