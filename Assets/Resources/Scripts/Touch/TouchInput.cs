@@ -133,8 +133,10 @@ public class TouchInput : MonoBehaviour {
 					G.SendMessage ("OnTouchExit",touchHit.point, SendMessageOptions.DontRequireReceiver);
 				}
 			}
+			#if UNITY_EDITOR    //  BRANCH:no mouse on touchpad
 
             lastMousePosition = Input.mousePosition;
+			#endif
 
         }//End of if(input)
 

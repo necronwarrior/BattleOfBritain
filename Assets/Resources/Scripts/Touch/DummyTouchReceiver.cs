@@ -6,10 +6,7 @@ using UnityEngine;
 public class DummyTouchReceiver : MonoBehaviour, ITouchReceiver
 {
 
-    public float distanceBetweenObjects = 1.0f;
-
-    
-    private Vector3 lastPointPosition;
+	public GameObject SelectedObject;
 
     //Prefab
     private UnityEngine.Object spherePrefab;
@@ -20,43 +17,37 @@ public class DummyTouchReceiver : MonoBehaviour, ITouchReceiver
 
     }
 
+	public void SetSelectedObject(GameObject SEl)
+	{
+		SelectedObject = SEl;
+	}
+
     public void OnTouchUp(Vector3 point)
     {
-        Debug.Log("OnTouchUp called, point: " + point);
+		SelectedObject.SendMessage ("OnTouchUp", point, SendMessageOptions.DontRequireReceiver);
+		SelectedObject = null;
     }
 
     public void OnTouchDown(Vector3 point)
     {
-        generatePoint(point);
-        Debug.Log("OnTouchDown called, point: " + point);
+		//SelectedObject.SendMessage ("OnTouchDown", point, SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnTouchMove(Vector3 point)
     {
-        Debug.Log("OnTouchMove called, point: " + point);
-        if ((point - lastPointPosition).magnitude >= distanceBetweenObjects)
-        {
-            generatePoint(point);
-        }
+		SelectedObject.SendMessage ("OnTouchMove", point, SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnTouchStay(Vector3 point)
     {
-        Debug.Log("OnTouchStay called, point: " + point);
+		SelectedObject.SendMessage ("OnTouchStay", point, SendMessageOptions.DontRequireReceiver);
     }
 
     public void OnTouchExit(Vector3 point)
     {
-        Debug.Log("OnTouchExit called, point: " + point);
+		SelectedObject.SendMessage ("OnTouchExit", point, SendMessageOptions.DontRequireReceiver);
     }
 
-    private void generatePoint(Vector3 position) {
-        GameObject newSphere = (GameObject) Instantiate(spherePrefab, transform);
-
-        newSphere.transform.position = position;
-
-        this.lastPointPosition = position;
-    }
 
 
 }
