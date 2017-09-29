@@ -147,7 +147,9 @@ public class DogFight : MonoBehaviour {
 
 
         transform.RotateAround(dogfightCenter, noiseAxis, fightingSpeed * Time.deltaTime);
-        otherPlaneGameObject.transform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
+
+		if(otherPlaneGameObject!=null)
+        	otherPlaneGameObject.transform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
         
 
     }
