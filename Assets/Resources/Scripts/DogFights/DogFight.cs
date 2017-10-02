@@ -58,7 +58,9 @@ public class DogFight : MonoBehaviour {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
+			GetComponent<SplineInterpolator> ().enabled = false;
             StartDogfight(other);
+
         }
 
     }
@@ -70,12 +72,16 @@ public class DogFight : MonoBehaviour {
 
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
         {
+
             EndDogfight();
         }
     }
 
 
     void StartDogfight(Collider other) {
+
+		if (GetComponent<PlaneTouchReciever> ().TrailTouch!=null)
+		GameObject.Destroy (GetComponent<PlaneTouchReciever> ().TrailTouch);
 
         Debug.Log("Dogfighting");
 
@@ -85,8 +91,8 @@ public class DogFight : MonoBehaviour {
 
         //dogfightCenter = transform.TransformPoint(dogfightCenter);
 
-        GameObject newSphere = (GameObject)Instantiate(spherePrefab, transform);
-        newSphere.transform.position = dogfightCenter;
+       // GameObject newSphere = (GameObject)Instantiate(spherePrefab, transform);
+       // newSphere.transform.position = dogfightCenter;
 
         this.rangeCollider.radius = this.rangeCollider.radius * 2.0f;
 
@@ -110,11 +116,17 @@ public class DogFight : MonoBehaviour {
 
         otherPlaneGameObject = null;
 
-        if(enemyPlaneComponent!=null)
-            enemyPlaneComponent.StopDealingDamage();
+		if (enemyPlaneComponent != null) {
+			enemyPlaneComponent.StopDealingDamage ();
+		}
+		else {
+
+			GetComponent<PlaneTouchReciever> ().ActivateHoldingPattern ();
+		}
 
         if (myPlaneComponent != null)
             myPlaneComponent.StopDealingDamage();
+
 
     }
 
