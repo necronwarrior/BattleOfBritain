@@ -12,6 +12,10 @@ public class Hangar : MonoBehaviour {
         IDLE
     }
 
+    //Audio variables
+    public AudioClip repairingSound;
+    public AudioSource repairingSource;
+
     // The current state of the hangar
     [SerializeField]
     private HangarState currentState = HangarState.IDLE;
@@ -93,6 +97,8 @@ public class Hangar : MonoBehaviour {
                     this.timeLeftRepairing = timeToRepair;
                     this.planeComingToHangar.GetComponentInChildren<Renderer>().enabled = false;
                     planeComingToHangar.GetComponent<PlaneTouchReciever>().DestroyTrail();
+
+                    repairingSource.PlayOneShot(repairingSound, 1.0f);
 
                 }
 

@@ -24,6 +24,20 @@ public class DogFight : MonoBehaviour {
     GeneralPlane enemyPlaneComponent;
     GeneralPlane myPlaneComponent;
 
+    //Audio
+    public AudioClip gunfire_1;
+    public AudioClip gunfire_2;
+    public AudioSource gunfireSource;
+
+    public AudioClip impact_1;
+    public AudioClip impact_2;
+    public AudioSource impactSource;
+
+
+    public AudioClip explosionClip;
+    public AudioSource explosionSource;
+
+
     void Awake() {
 
         spherePrefab = Resources.Load("Prefabs/TestSphere");
@@ -48,9 +62,36 @@ public class DogFight : MonoBehaviour {
                 EndDogfight();
             }
             Dance();
+            PlaySounds();
+
         }
 
 	}
+
+    void PlaySounds() {
+
+        if (!gunfireSource.isPlaying) {
+            if (((int)Random.Range(0.0f, 100.0f)) % 2 == 0) {
+                gunfireSource.PlayOneShot(gunfire_1, 1.0f);
+            }
+            else {
+                gunfireSource.PlayOneShot(gunfire_2, 1.0f);
+            }
+        }
+
+        if (!impactSource.isPlaying)
+        {
+            if (((int)Random.Range(0.0f, 100.0f)) % 2 == 0)
+            {
+                impactSource.PlayOneShot(impact_1, 1.0f);
+            }
+            else {
+                impactSource.PlayOneShot(impact_2, 1.0f);
+            }
+        }
+
+
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -112,6 +153,8 @@ public class DogFight : MonoBehaviour {
     }
 
     void EndDogfight() {
+
+        explosionSource.PlayOneShot(explosionClip, 1.0f);
 
         dogFighting = false;
 

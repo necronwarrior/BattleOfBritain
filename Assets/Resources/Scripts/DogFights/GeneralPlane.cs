@@ -15,13 +15,13 @@ public class GeneralPlane : MonoBehaviour {
     private UnityEngine.Object explosionPrefab;
     
 
-    void Awake() {
+    protected void Awake() {
         explosionPrefab = Resources.Load("Prefabs/Explosion");
 
     }
 
     // Use this for initialization
-    void Start()
+    protected void Start()
     {
         adversary = null;
         initialHealth = health;
@@ -29,7 +29,7 @@ public class GeneralPlane : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         if (adversary != null) {
             DealDamage();
