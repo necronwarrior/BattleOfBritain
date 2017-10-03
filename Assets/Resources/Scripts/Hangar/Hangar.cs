@@ -22,6 +22,9 @@ public class Hangar : MonoBehaviour {
     // The distance at which we consider the plane to be close enough
     public float planeIsInsideThreshold = 0.01f;
 
+    // The target position for the landing 
+    private Vector3 targetPosition;
+
     // The gameobject of the plane that will land next
     [SerializeField]
     private GameObject planeComingToHangar = null;
@@ -50,8 +53,8 @@ public class Hangar : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        targetPosition = this.transform.position;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -65,7 +68,7 @@ public class Hangar : MonoBehaviour {
 
 
 
-        Vector3 deltaPosition = this.transform.position - planeComingToHangar.transform.position;
+        Vector3 deltaPosition = targetPosition - planeComingToHangar.transform.position;
 
         float currentDistanceToPlane = deltaPosition.magnitude;
 
@@ -89,15 +92,12 @@ public class Hangar : MonoBehaviour {
                     this.currentState = HangarState.PLANE_INSIDE;
                     this.timeLeftRepairing = timeToRepair;
                     this.planeComingToHangar.GetComponentInChildren<Renderer>().enabled = false;
+                    planeComingToHangar.GetComponent<PlaneTouchReciever>().DestroyTrail();
 
                 }
 
-
-                
-
-
                 // We move it and point to to the right direction
-                planeComingToHangar.transform.position = Vector3.Lerp(planeComingToHangar.transform.position, this.transform.position, Time.deltaTime * landingSpeed);
+                planeComingToHangar.transform.position = Vector3.Lerp(planeComingToHangar.transform.position, targetPosition, Time.deltaTime * landingSpeed);
                 planeComingToHangar.transform.LookAt(this.transform);
 
                 //  We scale the plane to make it seem like it's going down
@@ -120,8 +120,7 @@ public class Hangar : MonoBehaviour {
                     this.currentState = HangarState.PLANE_COMING_OUT;
                     currentTimeTakingOff = 0.0f;
 					
-                    //We now make it move in the original circle movement
-					planeComingToHangar.GetComponent<PlaneTouchReciever>().DestroyTrail();
+                    //We now make it move in the original circle 
                     planeComingToHangar.GetComponent<PlaneTouchReciever>().ActivateHoldingPattern();
                     planeComingToHangar.GetComponent<SplineInterpolator>().enabled = true;
                 }
@@ -130,19 +129,20 @@ public class Hangar : MonoBehaviour {
 
             case HangarState.PLANE_COMING_OUT:
 
-                if (currentTimeTakingOff > timeToLand) { //The plane just left completely from the hangar
-                    
+
+                currentTimeTakingOff += Time.deltaTime;
+
+                planeComingToHangar.transform.localScale = Vector3.Lerp(Vector3.zero, originalPlaneScale, currentTimeTakingOff/timeToLand );
+
+                if (currentTimeTakingOff > timeToLand)
+                { //The plane just left completely from the hangar
+
                     //And we come back to our default state
                     ResetPlaneComingToHangar();
                     currentState = HangarState.IDLE;
 
                     //@@ TODO: See if we reach this state correctly and why can't we select the plane after taking off (also the null reference exception in 143)
                 }
-
-                currentTimeTakingOff += Time.deltaTime;
-
-                planeComingToHangar.transform.localScale = Vector3.Lerp(Vector3.zero, originalPlaneScale, currentTimeTakingOff/timeToLand );
-
 
                 break;
 
@@ -166,6 +166,7 @@ public class Hangar : MonoBehaviour {
 
     public void SetPlaneComingToHangar(GameObject planeObject) {
         this.planeComingToHangar = planeObject;
+        targetPosition.z = planeComingToHangar.transform.position.z;
     }
 
     public void ResetPlaneComingToHangar() {
