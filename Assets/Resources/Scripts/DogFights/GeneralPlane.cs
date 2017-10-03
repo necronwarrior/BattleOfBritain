@@ -6,12 +6,14 @@ public class GeneralPlane : MonoBehaviour {
 
     public float health = 100.0f;
     public float damagePerSecond = 20.0f;
+    private float initialHealth;
+
 
     private GeneralPlane adversary;
 
 
     private UnityEngine.Object explosionPrefab;
-
+    
 
     void Awake() {
         explosionPrefab = Resources.Load("Prefabs/Explosion");
@@ -22,7 +24,7 @@ public class GeneralPlane : MonoBehaviour {
     void Start()
     {
         adversary = null;
-
+        initialHealth = health;
 
     }
 
@@ -32,12 +34,6 @@ public class GeneralPlane : MonoBehaviour {
         if (adversary != null) {
             DealDamage();
         }
-    }
-
-    void DealDamage() {
-
-        adversary.TakeDamage(damagePerSecond * Time.deltaTime);
-
     }
 
     public void TakeDamage(float damage)
@@ -57,6 +53,20 @@ public class GeneralPlane : MonoBehaviour {
     public void StopDealingDamage() {
         adversary = null;
     }
+
+    public void Repair() {
+        this.health = initialHealth;
+    }
+
+
+
+    void DealDamage()
+    {
+
+        adversary.TakeDamage(damagePerSecond * Time.deltaTime);
+
+    }
+
 
     void Die()
     {

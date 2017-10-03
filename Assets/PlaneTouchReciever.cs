@@ -17,6 +17,9 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 	//Prefab
 	private UnityEngine.Object TrailPrefab, spherePrefab ;
 
+    // Hangar detecting stuff
+    public LayerMask hangarLayerMask;
+
 
 	void Start() {
 
@@ -26,17 +29,40 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		ActivateHoldingPattern ();
 	}
 
-	public void OnTouchUp(Vector3 point)
-	{
-		if (TrailTouch!=null){
-			Vector3 TempOld = TrailTouch.transform.position;
-			TrailTouch.transform.position = Vector3.Lerp(TempOld, SplineHolder.transform.GetChild(0).transform.position, 2.0f);
-		}
-		GetComponent<SplineController> ().SplineRoot = SplineHolder;
-		GetComponent<SplineController> ().RestartSpline (SplineHolder.transform.childCount/3.0f);
-		HoldingPatternHolder.GetComponent<LineRenderer> ().enabled = false;
+    public void OnTouchUp(Vector3 point)
+    {
+        if (TrailTouch != null)
+        {
+            Vector3 TempOld = TrailTouch.transform.position;
+            TrailTouch.transform.position = Vector3.Lerp(TempOld, SplineHolder.transform.GetChild(0).transform.position, 2.0f);
+        }
+        GetComponent<SplineController>().SplineRoot = SplineHolder;
+        GetComponent<SplineController>().RestartSpline(SplineHolder.transform.childCount / 3.0f);
+        HoldingPatternHolder.GetComponent<LineRenderer>().enabled = false;
 
-	}
+
+        // Detecting if we have finished the line on top of a hangar
+        Ray ray = new Ray(point, new Vector3(0.0f, 0.0f, 1.0f));
+        RaycastHit touchHit;
+
+        if (Physics.Raycast(ray, out touchHit, 1000, hangarLayerMask))
+        {
+
+            
+            GameObject hangarObject = touchHit.transform.gameObject;
+
+            Hangar hangarComponent = hangarObject.GetComponent<Hangar>();
+
+            Debug.Log("Got the component: " + hangarComponent);
+
+            hangarComponent.SetPlaneComingToHangar(this.transform.gameObject);
+
+            //We might have to do more stuff here :D
+        }
+
+    }
+        
+
 
 	public void OnTouchDown(Vector3 point)
 	{
