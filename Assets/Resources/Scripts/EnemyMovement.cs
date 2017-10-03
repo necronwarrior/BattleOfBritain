@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour {
 
-	public Transform Startpos, Finishpos;
+	public Transform Startpos, Finishpos, Parent;
 	public float GoTime;
 	// Use this for initialization
 	void Start () {
-		transform.position = Startpos.position;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (Time.timeSinceLevelLoad > GoTime) {
-			GetComponent<SplineInterpolator> ().enabled;
+			GetComponent<SplineController> ().SplineRoot = Parent;
+			GetComponent<SplineController> ().Duration = 8.0f;
 		}
 	}
 }
