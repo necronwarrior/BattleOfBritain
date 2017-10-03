@@ -9,7 +9,7 @@ public class DogFight : MonoBehaviour {
 
     public Vector3 dogfightCenter;
     private bool dogFighting = false;
-    private SphereCollider rangeCollider;
+	private SphereCollider rangeCollider;
 
 
     //Dancing Stuff
