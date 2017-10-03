@@ -153,11 +153,22 @@ public class DogFight : MonoBehaviour {
         noiseAxis2 -= new Vector3(1.0f, 1.0f, 1.0f);
         noiseAxis2.Normalize();
 
+        {
+            Vector3 previousPosition = transform.position;
+            transform.RotateAround(dogfightCenter, noiseAxis, fightingSpeed * Time.deltaTime);
+            Vector3 deltaPosition = transform.position - previousPosition;
+            transform.LookAt(transform.position + deltaPosition);
+        }
 
-        transform.RotateAround(dogfightCenter, noiseAxis, fightingSpeed * Time.deltaTime);
+        if (otherPlaneGameObject != null)
+        {
 
-		if(otherPlaneGameObject!=null)
-        	otherPlaneGameObject.transform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
+            Vector3 otherPreviousPosition = otherPlaneGameObject.transform.position;
+            otherPlaneGameObject.transform.RotateAround(dogfightCenter, noiseAxis2, fightingSpeed * Time.deltaTime);
+            Vector3 otherDeltaPosition = otherPlaneGameObject.transform.position - otherPreviousPosition;
+            otherPlaneGameObject.transform.LookAt(otherPlaneGameObject.transform.position + otherDeltaPosition);
+
+        }
         
 
     }
