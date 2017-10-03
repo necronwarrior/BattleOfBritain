@@ -16,7 +16,7 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 
 	//Prefab
 	private UnityEngine.Object TrailPrefab, spherePrefab ;
-
+	public bool doOncePerSpline;
 
 	void Start() {
 
@@ -28,14 +28,11 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 
 	public void OnTouchUp(Vector3 point)
 	{
-		if (TrailTouch!=null){
-			Vector3 TempOld = TrailTouch.transform.position;
-			TrailTouch.transform.position = Vector3.Lerp(TempOld, SplineHolder.transform.GetChild(0).transform.position, 2.0f);
-		}
+		GetComponent<SplineController> ().AutoClose = false;
+		GetComponent<SplineController> ().WrapMode = eWrapMode.ONCE;
 		GetComponent<SplineController> ().SplineRoot = SplineHolder;
 		GetComponent<SplineController> ().RestartSpline (SplineHolder.transform.childCount/3.0f);
 		HoldingPatternHolder.GetComponent<LineRenderer> ().enabled = false;
-
 	}
 
 	public void OnTouchDown(Vector3 point)
@@ -54,8 +51,12 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		TrailTouch = (GameObject)Instantiate (TrailPrefab);
 		TrailTouch.transform.parent = transform.parent.transform.parent;
 		TrailTouch.GetComponent<TrailRenderer> ().time = Mathf.Infinity;
+		TrailTouch.GetComponent<TrailRenderer> ().widthMultiplier = 0.02f;
 		TrailTouch.transform.position = point;
+
 		TrailTime = 0.0f;
+
+		doOncePerSpline = true;
 		//Map.SendMessage ("OnTouchDown", point, SendMessageOptions.DontRequireReceiver);
 	}
 
@@ -75,12 +76,20 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 	}
 
 	void Update(){
-		TrailTime += Time.deltaTime;
+		if (GetComponent<SplineInterpolator> ().isFinished == true 
+			&& doOncePerSpline == true) {
+			if (TrailTouch != null)
+				GameObject.Destroy (TrailTouch);
+			ActivateHoldingPattern();
+
+			doOncePerSpline = false;
+		}
 	}
 
 	public void OnTouchExit(Vector3 point)
 	{
 	}
+		
 
 	private void generatePoint(Vector3 position) {
 		GameObject newSphere = (GameObject) Instantiate(spherePrefab, SplineHolder.transform);
@@ -93,8 +102,10 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 	public void ActivateHoldingPattern()
 	{
 		HoldingPatternHolder.transform.position = transform.position;
+		GetComponent<SplineController> ().AutoClose = true;
+		GetComponent<SplineController> ().WrapMode = eWrapMode.LOOP;
 		GetComponent<SplineController> ().SplineRoot = HoldingPatternHolder;
-		GetComponent<SplineController> ().RestartSpline (4.0f);
+		GetComponent<SplineController> ().RestartSpline (3.0f);
 		HoldingPatternHolder.GetComponent<LineRenderer> ().enabled = true;
 		for (int i = 0; i < 4; i++) {
 			HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (i, HoldingPatternHolder.transform.GetChild (i).transform.position);

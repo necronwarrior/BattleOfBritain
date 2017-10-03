@@ -25,6 +25,8 @@ public class SplineInterpolator : MonoBehaviour
 	string mState = "";
 	bool mRotations;
 
+	public bool isFinished;
+
 	OnEndCallback mOnEndCallback;
 
 	void Awake()
@@ -40,6 +42,7 @@ public class SplineInterpolator : MonoBehaviour
 		mState = mode == eWrapMode.ONCE ? "Once" : "Loop";
 		mRotations = bRotations;
 		mOnEndCallback = endCallback;
+		isFinished = false;
 
 		SetInput();
 	}
@@ -160,6 +163,9 @@ public class SplineInterpolator : MonoBehaviour
 					// We call back to inform that we are ended
 					if (mOnEndCallback != null)
 						mOnEndCallback();
+
+					//We set a readable bool in case anyone wants to read this
+					isFinished =true;
 				}
 				else
 				{
