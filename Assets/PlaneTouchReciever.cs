@@ -52,6 +52,7 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 			GameObject.Destroy (TrailTouch);
 
 		TrailTouch = (GameObject)Instantiate (TrailPrefab);
+		TrailTouch.transform.parent = transform.parent.transform.parent;
 		TrailTouch.GetComponent<TrailRenderer> ().time = Mathf.Infinity;
 		TrailTouch.transform.position = point;
 		TrailTime = 0.0f;
