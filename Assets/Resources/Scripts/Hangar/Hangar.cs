@@ -119,8 +119,9 @@ public class Hangar : MonoBehaviour {
                     //And the plane can come out again
                     this.currentState = HangarState.PLANE_COMING_OUT;
                     currentTimeTakingOff = 0.0f;
-
+					
                     //We now make it move in the original circle movement
+					planeComingToHangar.GetComponent<PlaneTouchReciever>().DestroyTrail();
                     planeComingToHangar.GetComponent<PlaneTouchReciever>().ActivateHoldingPattern();
                     planeComingToHangar.GetComponent<SplineInterpolator>().enabled = true;
                 }

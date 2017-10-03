@@ -72,8 +72,7 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 
 		ActivateHoldingPattern ();
 
-		if (TrailTouch != null)
-			GameObject.Destroy (TrailTouch);
+		DestroyTrail ();
 
 		TrailTouch = (GameObject)Instantiate (TrailPrefab);
 		TrailTouch.transform.parent = transform.parent.transform.parent;
@@ -105,8 +104,7 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 	void Update(){
 		if (GetComponent<SplineInterpolator> ().isFinished == true 
 			&& doOncePerSpline == true) {
-			if (TrailTouch != null)
-				GameObject.Destroy (TrailTouch);
+			DestroyTrail ();
 			ActivateHoldingPattern();
 
 			doOncePerSpline = false;
@@ -138,5 +136,10 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 			HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (i, HoldingPatternHolder.transform.GetChild (i).transform.position);
 		}
 		GetComponent<SplineInterpolator> ().enabled = true;
+	}
+
+	public void DestroyTrail(){
+		if (TrailTouch != null)
+			GameObject.Destroy (TrailTouch);
 	}
 }
