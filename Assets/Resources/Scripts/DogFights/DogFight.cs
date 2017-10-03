@@ -68,6 +68,7 @@ public class DogFight : MonoBehaviour {
     void OnTriggerExit(Collider other)
     {
 
+        /*
         if (!dogFighting) return;
 
         if (other.gameObject.layer == LayerMask.NameToLayer("EnemyPlane"))
@@ -75,6 +76,8 @@ public class DogFight : MonoBehaviour {
 
             EndDogfight();
         }
+        */
+
     }
 
 
