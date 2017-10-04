@@ -77,7 +77,7 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		TrailTouch = (GameObject)Instantiate (TrailPrefab);
 		TrailTouch.transform.parent = transform.parent.transform.parent;
 		TrailTouch.GetComponent<TrailRenderer> ().time = Mathf.Infinity;
-		TrailTouch.GetComponent<TrailRenderer> ().widthMultiplier = 0.02f;
+		TrailTouch.GetComponent<TrailRenderer> ().widthMultiplier = 0.08f;
 		TrailTouch.transform.position = point;
 
 		TrailTime = 0.0f;
@@ -134,6 +134,10 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		HoldingPatternHolder.GetComponent<LineRenderer> ().enabled = true;
 		for (int i = 0; i < 4; i++) {
 			HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (i, HoldingPatternHolder.transform.GetChild (i).transform.position);
+			if (i == 0) {
+				HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (4, HoldingPatternHolder.transform.GetChild (i).transform.position);
+
+			}
 		}
 		GetComponent<SplineInterpolator> ().enabled = true;
 	}
