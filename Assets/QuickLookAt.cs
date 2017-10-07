@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Splinetest : MonoBehaviour {
+public class QuickLookAt : MonoBehaviour {
 
+	public GameObject LookAtObj;
 	// Use this for initialization
 	void Start () {
 		
@@ -11,6 +12,6 @@ public class Splinetest : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		transform.LookAt (LookAtObj.transform);
 	}
 }

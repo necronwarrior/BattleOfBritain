@@ -29,8 +29,22 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 
 		ActivateHoldingPattern ();
 	}
+		
+	void Update(){
+		if (GetComponent<SplineInterpolator> ().isFinished == true 
+			&& doOncePerSpline == true) {
+			DestroyTrail ();
+			ActivateHoldingPattern();
 
+			doOncePerSpline = false;
+		}
 
+		if (GetComponent<SplineController> ().SplineRoot == HoldingPatternHolder) {
+			GetComponent<CapsuleCollider> ().center = transform.InverseTransformPoint (HoldingPatternHolder.transform.position);
+		} else {
+			GetComponent<CapsuleCollider> ().center = Vector3.zero;
+		}
+	}
        
 	public void OnTouchUp(Vector3 point)
 	{
@@ -101,16 +115,6 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		
 	}
 
-	void Update(){
-		if (GetComponent<SplineInterpolator> ().isFinished == true 
-			&& doOncePerSpline == true) {
-			DestroyTrail ();
-			ActivateHoldingPattern();
-
-			doOncePerSpline = false;
-		}
-	}
-
 	public void OnTouchExit(Vector3 point)
 	{
 	}
@@ -132,10 +136,10 @@ public class PlaneTouchReciever : MonoBehaviour, ITouchReceiver {
 		GetComponent<SplineController> ().SplineRoot = HoldingPatternHolder;
 		GetComponent<SplineController> ().RestartSpline (3.0f);
 		HoldingPatternHolder.GetComponent<LineRenderer> ().enabled = true;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 8; i++) {
 			HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (i, HoldingPatternHolder.transform.GetChild (i).transform.position);
 			if (i == 0) {
-				HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (4, HoldingPatternHolder.transform.GetChild (i).transform.position);
+				HoldingPatternHolder.GetComponent<LineRenderer> ().SetPosition (8, HoldingPatternHolder.transform.GetChild (i).transform.position);
 
 			}
 		}

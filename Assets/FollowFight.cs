@@ -2,24 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrawPath : MonoBehaviour {
-
-	bool InUse;
-	GameObject Empty;
+public class FollowFight : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Empty = new GameObject ();
+		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-	}
-
-	void OnMouseDown(){
-		if (!InUse) {
-			Instantiate (Empty);
-		} 
 	}
 }
